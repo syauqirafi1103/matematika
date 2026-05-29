@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MatematikaPintar — Belajar Matematika Seru</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0e17;
+    --surface: #1a1927;
+    --card: #211f35;
+    --border: #2e2b4a;
+    --accent: #f7c948;
+    --accent2: #ff6b6b;
+    --accent3: #6bdfb8;
+    --accent4: #7b8cff;
+    --text: #fffffe;
+    --muted: #a7a4c7;
+    --radius: 16px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ===== BACKGROUND ===== */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(ellipse 60% 40% at 80% 10%, rgba(247,201,72,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 50% at 10% 80%, rgba(107,223,184,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 60% at 50% 50%, rgba(123,140,255,0.05) 0%, transparent 70%);
+    pointer-events: none; z-index: 0;
+  }
+
+  /* ===== NAV ===== */
+  nav {
+    position: sticky; top: 0;
+    background: rgba(15,14,23,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 32px;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 64px;
+    z-index: 100;
+  }
+  .nav-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800; font-size: 1.3rem;
+    display: flex; align-items: center; gap: 10px;
+    cursor: pointer;
+  }
+  .nav-logo span.dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--accent); display: inline-block;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(1.4);opacity:0.7} }
+
+  .nav-tabs { display: flex; gap: 4px; }
+  .nav-tab {
+    padding: 6px 16px; border-radius: 8px;
+    border: none; background: transparent;
+    color: var(--muted); font-family: 'DM Sans', sans-serif;
+    font-size: 0.88rem; cursor: pointer; transition: all 0.2s;
+  }
+  .nav-tab:hover { color: var(--text); background: var(--border); }
+  .nav-tab.active { color: var(--bg); background: var(--accent); font-weight: 600; }
+
+  .nav-admin {
+    padding: 8px 18px; border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--muted); font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem; cursor: pointer; transition: all 0.2s;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .nav-admin:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ===== PAGES ===== */
+  .page { display: none; position: relative; z-index: 1; }
+  .page.active { display: block; }
+
+  /* ===== HERO ===== */
+  .hero {
+    text-align: center;
+    padding: 80px 24px 60px;
+    max-width: 800px; margin: 0 auto;
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 6px 16px; border-radius: 100px;
+    border: 1px solid rgba(247,201,72,0.3);
+    background: rgba(247,201,72,0.08);
+    color: var(--accent); font-size: 0.82rem; font-weight: 500;
+    margin-bottom: 28px;
+    animation: fadeUp 0.6s ease both;
+  }
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2.4rem, 6vw, 4.2rem);
+    font-weight: 800; line-height: 1.1;
+    margin-bottom: 20px;
+    animation: fadeUp 0.7s ease both 0.1s;
+  }
+  .hero h1 em { font-style: normal; color: var(--accent); }
+  .hero p {
+    font-size: 1.1rem; color: var(--muted); line-height: 1.7;
+    max-width: 520px; margin: 0 auto 40px;
+    animation: fadeUp 0.7s ease both 0.2s;
+  }
+  .hero-btns {
+    display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+    animation: fadeUp 0.7s ease both 0.3s;
+  }
+  .btn-primary {
+    padding: 14px 32px; border-radius: 12px;
+    background: var(--accent); color: var(--bg);
+    border: none; font-family: 'DM Sans', sans-serif;
+    font-size: 1rem; font-weight: 700; cursor: pointer;
+    transition: all 0.2s; letter-spacing: -0.01em;
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(247,201,72,0.3); }
+  .btn-secondary {
+    padding: 14px 32px; border-radius: 12px;
+    background: transparent; color: var(--text);
+    border: 1px solid var(--border);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem; cursor: pointer; transition: all 0.2s;
+  }
+  .btn-secondary:hover { border-color: var(--muted); background: var(--surface); }
+
+  @keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:none} }
+
+  /* ===== STATS ===== */
+  .stats {
+    display: flex; justify-content: center; gap: 48px;
+    padding: 40px 24px;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    max-width: 700px; margin: 0 auto 60px;
+    animation: fadeUp 0.8s ease both 0.4s;
+  }
+  .stat { text-align: center; }
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 2rem; font-weight: 800; color: var(--accent);
+    display: block;
+  }
+  .stat-label { font-size: 0.82rem; color: var(--muted); margin-top: 2px; }
+
+  /* ===== SECTION ===== */
+  section { padding: 60px 24px; max-width: 1100px; margin: 0 auto; }
+  .section-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 36px; flex-wrap: wrap; gap: 12px;
+  }
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.8rem; font-weight: 800;
+  }
+  .section-title span { color: var(--accent); }
+
+  /* ===== TOPIC GRID ===== */
+  .topic-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+  }
+  .topic-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px;
+    cursor: pointer;
+    transition: all 0.25s;
+    position: relative; overflow: hidden;
+  }
+  .topic-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: var(--card-accent, var(--accent));
+    border-radius: 3px 3px 0 0;
+  }
+  .topic-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--card-accent, var(--accent));
+    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+  }
+  .topic-icon {
+    width: 48px; height: 48px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem; margin-bottom: 16px;
+    background: rgba(255,255,255,0.06);
+  }
+  .topic-name {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700; font-size: 1.1rem; margin-bottom: 6px;
+  }
+  .topic-desc {
+    font-size: 0.85rem; color: var(--muted); line-height: 1.6;
+    margin-bottom: 16px;
+  }
+  .topic-meta {
+    display: flex; align-items: center; gap: 12px;
+    font-size: 0.78rem; color: var(--muted);
+  }
+  .topic-badge {
+    padding: 3px 10px; border-radius: 100px;
+    font-size: 0.75rem; font-weight: 600;
+    background: rgba(247,201,72,0.15); color: var(--accent);
+  }
+  .topic-badge.medium { background: rgba(107,223,184,0.15); color: var(--accent3); }
+  .topic-badge.hard { background: rgba(255,107,107,0.15); color: var(--accent2); }
+
+  /* ===== MATERIAL VIEW ===== */
+  .material-header {
+    display: flex; align-items: flex-start; gap: 20px;
+    padding: 40px 24px 0; max-width: 1100px; margin: 0 auto;
+  }
+  .back-btn {
+    padding: 10px 18px; border-radius: 10px;
+    border: 1px solid var(--border); background: var(--surface);
+    color: var(--muted); font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem; cursor: pointer; transition: all 0.2s;
+    display: flex; align-items: center; gap: 6px; flex-shrink: 0;
+  }
+  .back-btn:hover { color: var(--text); border-color: var(--muted); }
+
+  .material-layout {
+    display: grid; grid-template-columns: 1fr 340px;
+    gap: 28px; padding: 24px; max-width: 1100px; margin: 0 auto;
+  }
+  @media(max-width:900px){ .material-layout{ grid-template-columns:1fr; } }
+
+  .material-content {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 40px;
+  }
+  .material-content h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.8rem; font-weight: 800; margin-bottom: 8px;
+  }
+  .material-content .meta-row {
+    display: flex; gap: 12px; margin-bottom: 32px;
+    flex-wrap: wrap; align-items: center;
+  }
+  .material-body h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.15rem; font-weight: 700;
+    color: var(--accent); margin: 32px 0 12px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .material-body h3::before {
+    content: ''; width: 4px; height: 18px;
+    background: var(--accent); border-radius: 2px; display: block;
+  }
+  .material-body p {
+    color: var(--muted); line-height: 1.8; font-size: 0.95rem; margin-bottom: 14px;
+  }
+  .formula-box {
+    background: rgba(247,201,72,0.06);
+    border: 1px solid rgba(247,201,72,0.2);
+    border-radius: 12px; padding: 20px 24px;
+    margin: 16px 0;
+    font-family: 'Syne', sans-serif;
+    font-size: 1.05rem; color: var(--accent);
+    text-align: center;
+  }
+  .example-box {
+    background: rgba(107,223,184,0.06);
+    border: 1px solid rgba(107,223,184,0.2);
+    border-radius: 12px; padding: 20px 24px;
+    margin: 16px 0;
+  }
+  .example-box .ex-label {
+    font-size: 0.75rem; font-weight: 700; color: var(--accent3);
+    text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px;
+  }
+  .example-box p { color: var(--text); margin-bottom: 6px; }
+  .note-box {
+    background: rgba(123,140,255,0.08);
+    border-left: 3px solid var(--accent4);
+    border-radius: 0 12px 12px 0; padding: 16px 20px;
+    margin: 16px 0;
+  }
+  .note-box p { color: var(--text); font-size: 0.9rem; }
+
+  /* ===== SIDEBAR ===== */
+  .sidebar { display: flex; flex-direction: column; gap: 20px; }
+  .sidebar-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 24px;
+  }
+  .sidebar-card h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.95rem; font-weight: 700; margin-bottom: 16px;
+    color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em;
+  }
+  .sub-topic-list { display: flex; flex-direction: column; gap: 6px; }
+  .sub-topic-item {
+    padding: 10px 14px; border-radius: 10px;
+    cursor: pointer; transition: all 0.2s;
+    font-size: 0.9rem; color: var(--muted);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .sub-topic-item:hover { background: var(--surface); color: var(--text); }
+  .sub-topic-item.active {
+    background: rgba(247,201,72,0.12);
+    color: var(--accent); font-weight: 600;
+  }
+  .sub-topic-item .check {
+    width: 18px; height: 18px; border-radius: 50%;
+    border: 2px solid var(--border); flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.65rem;
+  }
+  .sub-topic-item.done .check {
+    background: var(--accent3); border-color: var(--accent3); color: var(--bg);
+  }
+
+  /* ===== QUIZ ===== */
+  .quiz-wrap {
+    max-width: 700px; margin: 0 auto; padding: 40px 24px;
+  }
+  .quiz-header { margin-bottom: 36px; }
+  .quiz-progress {
+    height: 6px; background: var(--border);
+    border-radius: 100px; margin-bottom: 24px; overflow: hidden;
+  }
+  .quiz-progress-bar {
+    height: 100%; background: var(--accent);
+    border-radius: 100px; transition: width 0.4s ease;
+  }
+  .quiz-question {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.2rem; font-weight: 700; margin-bottom: 28px;
+    line-height: 1.5;
+  }
+  .quiz-options { display: flex; flex-direction: column; gap: 12px; }
+  .quiz-option {
+    padding: 16px 20px; border-radius: 12px;
+    border: 1.5px solid var(--border);
+    background: var(--card);
+    cursor: pointer; transition: all 0.2s;
+    font-size: 0.95rem; color: var(--text);
+    display: flex; align-items: center; gap: 14px;
+    text-align: left;
+  }
+  .quiz-option:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+  .quiz-option.correct { border-color: var(--accent3); background: rgba(107,223,184,0.1); color: var(--accent3); }
+  .quiz-option.wrong { border-color: var(--accent2); background: rgba(255,107,107,0.1); color: var(--accent2); }
+  .quiz-option:disabled { cursor: default; }
+  .option-letter {
+    width: 30px; height: 30px; border-radius: 8px;
+    background: var(--border); display: flex; align-items: center;
+    justify-content: center; font-weight: 700; font-size: 0.85rem;
+    flex-shrink: 0;
+  }
+  .quiz-feedback {
+    margin-top: 20px; padding: 16px 20px;
+    border-radius: 12px; font-size: 0.9rem; line-height: 1.6;
+    display: none;
+  }
+  .quiz-feedback.show { display: block; }
+  .quiz-feedback.correct-fb { background: rgba(107,223,184,0.1); border: 1px solid rgba(107,223,184,0.3); color: var(--accent3); }
+  .quiz-feedback.wrong-fb { background: rgba(255,107,107,0.1); border: 1px solid rgba(255,107,107,0.3); color: var(--accent2); }
+  .quiz-nav { display: flex; justify-content: flex-end; margin-top: 28px; }
+  .quiz-result {
+    text-align: center; padding: 60px 24px;
+  }
+  .score-ring {
+    width: 140px; height: 140px; border-radius: 50%;
+    border: 6px solid var(--border); margin: 0 auto 28px;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; position: relative;
+  }
+  .score-ring::before {
+    content: '';
+    position: absolute; inset: -6px;
+    border-radius: 50%;
+    background: conic-gradient(var(--accent) var(--pct, 0%), var(--border) 0%);
+    mask: radial-gradient(transparent 56px, black 57px);
+    -webkit-mask: radial-gradient(transparent 56px, black 57px);
+  }
+  .score-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 2.4rem; font-weight: 800; color: var(--accent);
+  }
+  .score-label { font-size: 0.75rem; color: var(--muted); }
+
+  /* ===== ADMIN ===== */
+  .admin-wrap {
+    max-width: 900px; margin: 0 auto; padding: 40px 24px;
+  }
+  .admin-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.6rem; font-weight: 800; margin-bottom: 32px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .admin-title .badge {
+    padding: 4px 12px; background: rgba(255,107,107,0.15);
+    color: var(--accent2); border-radius: 100px;
+    font-size: 0.75rem; font-weight: 700;
+  }
+  .form-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 32px; margin-bottom: 24px;
+  }
+  .form-card h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1rem; font-weight: 700; margin-bottom: 20px; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.06em;
+  }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media(max-width:600px){ .form-row{ grid-template-columns:1fr; } }
+  .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+  .form-group label { font-size: 0.82rem; color: var(--muted); font-weight: 500; }
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    padding: 12px 16px; border-radius: 10px;
+    border: 1.5px solid var(--border);
+    background: var(--surface); color: var(--text);
+    font-family: 'DM Sans', sans-serif; font-size: 0.92rem;
+    outline: none; transition: border-color 0.2s;
+    resize: vertical;
+  }
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus { border-color: var(--accent); }
+  .form-group textarea { min-height: 100px; }
+
+  .quiz-builder { margin-top: 24px; }
+  .quiz-q-item {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 20px; margin-bottom: 12px;
+  }
+  .quiz-q-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 14px;
+  }
+  .quiz-q-header span {
+    font-size: 0.82rem; color: var(--muted); font-weight: 600;
+  }
+  .delete-btn {
+    padding: 4px 12px; border-radius: 6px;
+    border: 1px solid rgba(255,107,107,0.3);
+    background: rgba(255,107,107,0.1); color: var(--accent2);
+    font-size: 0.78rem; cursor: pointer;
+  }
+  .delete-btn:hover { background: rgba(255,107,107,0.2); }
+  .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
+  .option-input { display: flex; gap: 8px; align-items: center; }
+  .option-input input[type=radio] { accent-color: var(--accent); flex-shrink: 0; }
+  .add-q-btn {
+    width: 100%; padding: 12px;
+    border-radius: 10px; border: 1.5px dashed var(--border);
+    background: transparent; color: var(--muted);
+    cursor: pointer; font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem; transition: all 0.2s;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .add-q-btn:hover { border-color: var(--accent); color: var(--accent); background: rgba(247,201,72,0.05); }
+
+  .topics-admin-list { display: flex; flex-direction: column; gap: 8px; }
+  .topic-admin-item {
+    display: flex; align-items: center; gap: 14px;
+    padding: 14px 18px; border-radius: 10px;
+    background: var(--surface); border: 1px solid var(--border);
+  }
+  .topic-admin-item .icon { font-size: 1.2rem; }
+  .topic-admin-item .info { flex: 1; }
+  .topic-admin-item .info strong { font-size: 0.92rem; display: block; }
+  .topic-admin-item .info small { font-size: 0.78rem; color: var(--muted); }
+  .edit-btn {
+    padding: 6px 14px; border-radius: 8px;
+    border: 1px solid var(--border);
+    background: transparent; color: var(--muted);
+    font-size: 0.8rem; cursor: pointer; transition: all 0.2s;
+  }
+  .edit-btn:hover { border-color: var(--accent4); color: var(--accent4); }
+
+  /* ===== TOAST ===== */
+  #toast {
+    position: fixed; bottom: 32px; right: 32px;
+    padding: 14px 20px; border-radius: 12px;
+    background: var(--accent3); color: var(--bg);
+    font-weight: 600; font-size: 0.88rem;
+    transform: translateY(80px); opacity: 0;
+    transition: all 0.3s; pointer-events: none; z-index: 999;
+  }
+  #toast.show { transform: none; opacity: 1; }
+
+  /* ===== EMPTY ===== */
+  .empty-state {
+    text-align: center; padding: 80px 24px;
+    color: var(--muted);
+  }
+  .empty-state .emoji { font-size: 3rem; margin-bottom: 16px; display: block; }
+  .empty-state p { font-size: 0.95rem; }
+
+  /* ===== SCROLLBAR ===== */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo" onclick="goHome()">
+    <span class="dot"></span>MatematikaPintar
+  </div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showPage('home', this)">Beranda</button>
+    <button class="nav-tab" onclick="showPage('topics', this)">Materi</button>
+    <button class="nav-tab" onclick="showPage('quiz-home', this)">Kuis</button>
+  </div>
+  <button class="nav-admin" onclick="showPage('admin', document.querySelector('.nav-tab.active'))">
+    ⚙️ Admin
+  </button>
+</nav>
+
+<!-- ============ HOME ============ -->
+<div id="page-home" class="page active">
+  <div class="hero">
+    <div class="hero-badge">✨ Platform Pembelajaran Matematika</div>
+    <h1>Matematika jadi <em>lebih mudah</em> dan menyenangkan</h1>
+    <p>Pelajari matematika dari dasar hingga lanjutan dengan materi terstruktur, contoh soal, dan kuis interaktif.</p>
+    <div class="hero-btns">
+      <button class="btn-primary" onclick="showPage('topics', document.querySelectorAll('.nav-tab')[1])">Mulai Belajar →</button>
+      <button class="btn-secondary" onclick="showPage('quiz-home', document.querySelectorAll('.nav-tab')[2])">Coba Kuis</button>
+    </div>
+  </div>
+  <div class="stats" id="stats-row">
+    <div class="stat"><span class="stat-num" id="stat-topics">0</span><div class="stat-label">Topik Tersedia</div></div>
+    <div class="stat"><span class="stat-num" id="stat-subtopics">0</span><div class="stat-label">Sub-Materi</div></div>
+    <div class="stat"><span class="stat-num" id="stat-quizzes">0</span><div class="stat-label">Soal Kuis</div></div>
+  </div>
+</div>
+
+<!-- ============ TOPICS ============ -->
+<div id="page-topics" class="page">
+  <section>
+    <div class="section-header">
+      <div class="section-title">Pilih <span>Materi</span></div>
+    </div>
+    <div class="topic-grid" id="topic-grid"></div>
+  </section>
+</div>
+
+<!-- ============ MATERIAL ============ -->
+<div id="page-material" class="page">
+  <div class="material-header">
+    <button class="back-btn" onclick="showPage('topics', document.querySelectorAll('.nav-tab')[1])">← Kembali</button>
+  </div>
+  <div class="material-layout">
+    <div class="material-content" id="material-content"></div>
+    <div class="sidebar" id="material-sidebar"></div>
+  </div>
+</div>
+
+<!-- ============ QUIZ HOME ============ -->
+<div id="page-quiz-home" class="page">
+  <section>
+    <div class="section-header">
+      <div class="section-title">Pilih Topik <span>Kuis</span></div>
+    </div>
+    <div class="topic-grid" id="quiz-topic-grid"></div>
+  </section>
+</div>
+
+<!-- ============ QUIZ ============ -->
+<div id="page-quiz" class="page">
+  <div style="max-width:700px;margin:0 auto;padding:24px 24px 0">
+    <button class="back-btn" onclick="showPage('quiz-home', document.querySelectorAll('.nav-tab')[2])">← Kembali</button>
+  </div>
+  <div class="quiz-wrap" id="quiz-wrap"></div>
+</div>
+
+<!-- ============ ADMIN ============ -->
+<div id="page-admin" class="page">
+  <div class="admin-wrap">
+    <div class="admin-title">Panel Admin <span class="badge">GURU</span></div>
+
+    <!-- List Topik -->
+    <div class="form-card">
+      <h3>📚 Daftar Topik</h3>
+      <div class="topics-admin-list" id="topics-admin-list"></div>
+      <button class="btn-primary" style="margin-top:20px;width:100%" onclick="openAddTopic()">+ Tambah Topik Baru</button>
+    </div>
+
+    <!-- Form Tambah/Edit Topik -->
+    <div class="form-card" id="topic-form-card" style="display:none">
+      <h3 id="topic-form-title">✏️ Tambah Topik</h3>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Nama Topik</label>
+          <input type="text" id="f-topic-name" placeholder="cth: Aljabar">
+        </div>
+        <div class="form-group">
+          <label>Ikon (emoji)</label>
+          <input type="text" id="f-topic-icon" placeholder="cth: 🔢" maxlength="4">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Deskripsi singkat</label>
+        <input type="text" id="f-topic-desc" placeholder="Deskripsi topik ini...">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Tingkat kesulitan</label>
+          <select id="f-topic-level">
+            <option value="easy">Mudah</option>
+            <option value="medium">Sedang</option>
+            <option value="hard">Sulit</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Warna aksen</label>
+          <select id="f-topic-color">
+            <option value="#f7c948">Kuning</option>
+            <option value="#6bdfb8">Hijau</option>
+            <option value="#ff6b6b">Merah</option>
+            <option value="#7b8cff">Biru</option>
+            <option value="#ff9f43">Oranye</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Sub-materi & isi -->
+      <h3 style="margin-top:24px">📖 Sub-Materi</h3>
+      <div id="subtopics-builder"></div>
+      <button class="add-q-btn" onclick="addSubtopic()">+ Tambah Sub-Materi</button>
+
+      <!-- Kuis -->
+      <h3 style="margin-top:28px">❓ Soal Kuis</h3>
+      <div class="quiz-builder" id="quiz-builder"></div>
+      <button class="add-q-btn" onclick="addQuizQuestion()">+ Tambah Soal</button>
+
+      <div style="display:flex;gap:12px;margin-top:28px">
+        <button class="btn-primary" onclick="saveTopic()">Simpan Topik</button>
+        <button class="btn-secondary" onclick="cancelTopicForm()">Batal</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// DATA STORE
+// ============================================================
+let db = JSON.parse(localStorage.getItem('mtk_db') || 'null') || {
+  topics: [
+    {
+      id: 't1', name: 'Bilangan Bulat', icon: '🔢', desc: 'Operasi penjumlahan, pengurangan, perkalian, dan pembagian bilangan bulat.',
+      level: 'easy', color: '#f7c948',
+      subtopics: [
+        { id: 's1', title: 'Pengertian Bilangan Bulat', content: `<h3>Apa itu Bilangan Bulat?</h3><p>Bilangan bulat adalah kumpulan bilangan yang terdiri dari bilangan negatif, nol, dan bilangan positif. Himpunan bilangan bulat dilambangkan dengan Z.</p><div class="formula-box">Z = { ..., -3, -2, -1, 0, 1, 2, 3, ... }</div><p>Bilangan bulat dibagi menjadi tiga kelompok: bilangan bulat positif (1, 2, 3, ...), bilangan nol (0), dan bilangan bulat negatif (..., -3, -2, -1).</p><div class="note-box"><p>💡 Bilangan bulat <strong>tidak</strong> termasuk bilangan desimal seperti 1.5 atau pecahan seperti ½.</p></div>` },
+        { id: 's2', title: 'Operasi Penjumlahan & Pengurangan', content: `<h3>Penjumlahan Bilangan Bulat</h3><p>Saat menjumlahkan dua bilangan dengan tanda yang sama, jumlahkan nilai absolutnya dan gunakan tanda yang sama.</p><div class="formula-box">(-4) + (-3) = -(4+3) = -7</div><div class="example-box"><div class="ex-label">Contoh</div><p>5 + 3 = 8</p><p>(-5) + (-3) = -8</p><p>(-5) + 3 = -2  (nilai absolut 5 > 3, pakai tanda minus)</p></div><h3>Pengurangan Bilangan Bulat</h3><p>Pengurangan dapat diubah menjadi penjumlahan dengan mengubah tanda bilangan kedua.</p><div class="formula-box">a - b = a + (-b)</div><div class="example-box"><div class="ex-label">Contoh</div><p>7 - 4 = 7 + (-4) = 3</p><p>3 - 8 = 3 + (-8) = -5</p></div>` },
+        { id: 's3', title: 'Perkalian & Pembagian', content: `<h3>Aturan Tanda</h3><p>Dalam perkalian dan pembagian bilangan bulat, berlaku aturan tanda berikut:</p><div class="formula-box">(+) × (+) = (+)&nbsp;&nbsp;&nbsp;&nbsp;(+) × (-) = (-)<br>(-) × (+) = (-)&nbsp;&nbsp;&nbsp;&nbsp;(-) × (-) = (+)</div><div class="example-box"><div class="ex-label">Contoh Perkalian</div><p>3 × 4 = 12</p><p>(-3) × 4 = -12</p><p>(-3) × (-4) = 12</p></div><div class="note-box"><p>💡 Ingat: negatif × negatif = positif. Bayangkan "dua negasi menghasilkan afirmasi".</p></div>` }
+      ],
+      quiz: [
+        { q: 'Berapakah hasil dari (-5) + 8?', opts: ['3', '-3', '13', '-13'], ans: 0, explain: 'Karena 8 > 5 dan 8 positif, hasilnya positif: 8 - 5 = 3' },
+        { q: 'Hasil dari (-4) × (-6) adalah...', opts: ['-24', '24', '-10', '10'], ans: 1, explain: 'Negatif × Negatif = Positif. 4 × 6 = 24' },
+        { q: 'Manakah yang bukan bilangan bulat?', opts: ['-7', '0', '2,5', '100'], ans: 2, explain: '2,5 adalah bilangan desimal, bukan bilangan bulat.' }
+      ]
+    },
+    {
+      id: 't2', name: 'Pecahan', icon: '½', desc: 'Memahami dan mengoperasikan berbagai bentuk pecahan.',
+      level: 'medium', color: '#6bdfb8',
+      subtopics: [
+        { id: 's4', title: 'Jenis-jenis Pecahan', content: `<h3>Pecahan Biasa</h3><p>Pecahan biasa terdiri dari pembilang (numerator) di atas dan penyebut (denominator) di bawah.</p><div class="formula-box">a/b, dengan b ≠ 0</div><p>Contoh: ¼, ⅔, ⅗</p><h3>Pecahan Campuran</h3><p>Pecahan campuran adalah gabungan bilangan bulat dengan pecahan biasa.</p><div class="example-box"><div class="ex-label">Contoh</div><p>2½ = 2 + ½ = 5/2</p></div><h3>Pecahan Desimal</h3><p>Pecahan yang ditulis dalam bentuk desimal menggunakan tanda koma.</p><div class="formula-box">0,5 = ½ &nbsp;&nbsp; 0,25 = ¼ &nbsp;&nbsp; 0,75 = ¾</div>` },
+        { id: 's5', title: 'Operasi Pecahan', content: `<h3>Penjumlahan & Pengurangan Pecahan</h3><p>Untuk menjumlah atau mengurangi pecahan, penyebut harus sama (samakan penyebut dengan KPK).</p><div class="formula-box">a/b + c/b = (a+c)/b</div><div class="example-box"><div class="ex-label">Contoh</div><p>1/4 + 2/4 = 3/4</p><p>1/3 + 1/4 = 4/12 + 3/12 = 7/12</p></div><h3>Perkalian Pecahan</h3><div class="formula-box">a/b × c/d = (a×c)/(b×d)</div><h3>Pembagian Pecahan</h3><div class="formula-box">a/b ÷ c/d = a/b × d/c</div>` }
+      ],
+      quiz: [
+        { q: '1/4 + 1/2 = ?', opts: ['2/6', '3/4', '1/6', '2/4'], ans: 1, explain: '1/4 + 2/4 = 3/4' },
+        { q: '2/3 × 3/4 = ?', opts: ['6/12', '5/12', '1/2', '6/7'], ans: 2, explain: '(2×3)/(3×4) = 6/12 = 1/2' }
+      ]
+    },
+    {
+      id: 't3', name: 'Aljabar', icon: '📐', desc: 'Variabel, ekspresi aljabar, dan persamaan linear.',
+      level: 'medium', color: '#7b8cff',
+      subtopics: [
+        { id: 's6', title: 'Variabel dan Ekspresi', content: `<h3>Apa itu Variabel?</h3><p>Variabel adalah simbol (biasanya huruf) yang mewakili nilai yang belum diketahui.</p><div class="formula-box">x, y, z, a, b, n ← contoh variabel</div><h3>Ekspresi Aljabar</h3><p>Ekspresi aljabar adalah kombinasi variabel, konstanta, dan operasi matematika.</p><div class="example-box"><div class="ex-label">Contoh</div><p>3x + 5</p><p>2y² - 4y + 1</p><p>x/2 + 7</p></div><div class="note-box"><p>💡 Ekspresi berbeda dengan persamaan. Ekspresi tidak memiliki tanda "=" sedangkan persamaan memiliki.</p></div>` },
+        { id: 's7', title: 'Persamaan Linear', content: `<h3>Persamaan Linear Satu Variabel</h3><p>Persamaan linear satu variabel adalah persamaan yang memiliki tepat satu variabel dengan pangkat tertinggi 1.</p><div class="formula-box">ax + b = c</div><h3>Cara Menyelesaikan</h3><p>Isolasi variabel di satu sisi dengan melakukan operasi yang sama pada kedua ruas.</p><div class="example-box"><div class="ex-label">Contoh: Selesaikan 2x + 3 = 11</div><p>2x + 3 = 11</p><p>2x = 11 - 3 = 8</p><p>x = 8 ÷ 2 = 4</p></div>` }
+      ],
+      quiz: [
+        { q: 'Jika 3x + 6 = 18, maka nilai x adalah...', opts: ['2', '3', '4', '6'], ans: 2, explain: '3x = 18 - 6 = 12, sehingga x = 12/3 = 4' },
+        { q: 'Bentuk sederhana dari 5x + 3x - 2x adalah...', opts: ['6x', '7x', '8x', '10x'], ans: 0, explain: '5x + 3x - 2x = (5+3-2)x = 6x' }
+      ]
+    }
+  ]
+};
+
+function saveDB() { localStorage.setItem('mtk_db', JSON.stringify(db)); }
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+function showPage(id, activeTabEl) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  if (activeTabEl && activeTabEl.classList.contains('nav-tab')) activeTabEl.classList.add('active');
+  if (id === 'home') renderStats();
+  if (id === 'topics') renderTopics();
+  if (id === 'quiz-home') renderQuizTopics();
+  if (id === 'admin') renderAdmin();
+  window.scrollTo(0, 0);
+}
+
+function goHome() { showPage('home', document.querySelectorAll('.nav-tab')[0]); }
+
+// ============================================================
+// HOME STATS
+// ============================================================
+function renderStats() {
+  document.getElementById('stat-topics').textContent = db.topics.length;
+  document.getElementById('stat-subtopics').textContent = db.topics.reduce((a, t) => a + t.subtopics.length, 0);
+  document.getElementById('stat-quizzes').textContent = db.topics.reduce((a, t) => a + t.quiz.length, 0);
+}
+renderStats();
+
+// ============================================================
+// TOPICS
+// ============================================================
+const levelLabel = { easy: 'Mudah', medium: 'Sedang', hard: 'Sulit' };
+const levelClass = { easy: '', medium: 'medium', hard: 'hard' };
+
+function renderTopics() {
+  const grid = document.getElementById('topic-grid');
+  if (!db.topics.length) {
+    grid.innerHTML = '<div class="empty-state"><span class="emoji">📚</span><p>Belum ada materi. Tambahkan lewat panel Admin.</p></div>';
+    return;
+  }
+  grid.innerHTML = db.topics.map(t => `
+    <div class="topic-card" style="--card-accent:${t.color}" onclick="openMaterial('${t.id}')">
+      <div class="topic-icon">${t.icon}</div>
+      <div class="topic-name">${t.name}</div>
+      <div class="topic-desc">${t.desc}</div>
+      <div class="topic-meta">
+        <span class="topic-badge ${levelClass[t.level]}">${levelLabel[t.level]}</span>
+        <span>${t.subtopics.length} sub-materi</span>
+        <span>${t.quiz.length} soal</span>
+      </div>
+    </div>`).join('');
+}
+
+// ============================================================
+// MATERIAL
+// ============================================================
+let currentTopic = null;
+let currentSubIdx = 0;
+
+function openMaterial(topicId) {
+  currentTopic = db.topics.find(t => t.id === topicId);
+  currentSubIdx = 0;
+  renderMaterial();
+  showPage('material', null);
+}
+
+function renderMaterial() {
+  if (!currentTopic) return;
+  const sub = currentTopic.subtopics[currentSubIdx];
+
+  // Content
+  const mc = document.getElementById('material-content');
+  mc.innerHTML = `
+    <h2>${currentTopic.icon} ${currentTopic.name}</h2>
+    <div class="meta-row">
+      <span class="topic-badge ${levelClass[currentTopic.level]}">${levelLabel[currentTopic.level]}</span>
+      <span style="color:var(--muted);font-size:.82rem">${currentSubIdx + 1} / ${currentTopic.subtopics.length} sub-materi</span>
+    </div>
+    ${sub ? `<h2 style="font-family:'Syne',sans-serif;font-size:1.3rem;margin-bottom:20px">${sub.title}</h2>
+    <div class="material-body">${sub.content}</div>
+    <div style="display:flex;gap:12px;margin-top:36px;border-top:1px solid var(--border);padding-top:24px">
+      ${currentSubIdx > 0 ? `<button class="btn-secondary" onclick="goSub(${currentSubIdx-1})">← Sebelumnya</button>` : ''}
+      ${currentSubIdx < currentTopic.subtopics.length - 1
+        ? `<button class="btn-primary" onclick="goSub(${currentSubIdx+1})">Selanjutnya →</button>`
+        : `<button class="btn-primary" onclick="startQuizForTopic('${currentTopic.id}')">Mulai Kuis ✓</button>`}
+    </div>`
+    : '<div class="empty-state"><span class="emoji">📄</span><p>Belum ada sub-materi.</p></div>'}`;
+
+  // Sidebar
+  const ms = document.getElementById('material-sidebar');
+  const progress = JSON.parse(localStorage.getItem('mtk_progress') || '{}');
+  ms.innerHTML = `
+    <div class="sidebar-card">
+      <h4>Sub-Materi</h4>
+      <div class="sub-topic-list">
+        ${currentTopic.subtopics.map((s, i) => {
+          const done = progress[`${currentTopic.id}_${i}`];
+          return `<div class="sub-topic-item ${i === currentSubIdx ? 'active' : ''} ${done ? 'done' : ''}" onclick="goSub(${i})">
+            <div class="check">${done ? '✓' : ''}</div>
+            <span>${s.title}</span>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>
+    ${currentTopic.quiz.length ? `<div class="sidebar-card">
+      <h4>Kuis Tersedia</h4>
+      <p style="font-size:.85rem;color:var(--muted);margin-bottom:14px">${currentTopic.quiz.length} soal untuk topik ini</p>
+      <button class="btn-primary" style="width:100%" onclick="startQuizForTopic('${currentTopic.id}')">Mulai Kuis</button>
+    </div>` : ''}`;
+}
+
+function goSub(idx) {
+  const progress = JSON.parse(localStorage.getItem('mtk_progress') || '{}');
+  progress[`${currentTopic.id}_${currentSubIdx}`] = true;
+  localStorage.setItem('mtk_progress', JSON.stringify(progress));
+  currentSubIdx = idx;
+  renderMaterial();
+  document.getElementById('page-material').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ============================================================
+// QUIZ
+// ============================================================
+let quizState = { topic: null, questions: [], idx: 0, score: 0, answered: false };
+
+function renderQuizTopics() {
+  const grid = document.getElementById('quiz-topic-grid');
+  const withQuiz = db.topics.filter(t => t.quiz.length > 0);
+  if (!withQuiz.length) {
+    grid.innerHTML = '<div class="empty-state"><span class="emoji">❓</span><p>Belum ada kuis. Tambahkan lewat panel Admin.</p></div>';
+    return;
+  }
+  grid.innerHTML = withQuiz.map(t => `
+    <div class="topic-card" style="--card-accent:${t.color}" onclick="startQuizForTopic('${t.id}')">
+      <div class="topic-icon">${t.icon}</div>
+      <div class="topic-name">${t.name}</div>
+      <div class="topic-desc">${t.desc}</div>
+      <div class="topic-meta">
+        <span class="topic-badge ${levelClass[t.level]}">${levelLabel[t.level]}</span>
+        <span>${t.quiz.length} soal</span>
+      </div>
+    </div>`).join('');
+}
+
+function startQuizForTopic(topicId) {
+  const topic = db.topics.find(t => t.id === topicId);
+  quizState = { topic, questions: [...topic.quiz], idx: 0, score: 0, answered: false };
+  renderQuiz();
+  showPage('quiz', document.querySelectorAll('.nav-tab')[2]);
+}
+
+function renderQuiz() {
+  const wrap = document.getElementById('quiz-wrap');
+  const { questions, idx, score } = quizState;
+
+  if (idx >= questions.length) {
+    const pct = Math.round((score / questions.length) * 100);
+    const msg = pct >= 80 ? '🎉 Luar Biasa!' : pct >= 60 ? '👍 Bagus!' : '📚 Perlu Belajar Lagi';
+    wrap.innerHTML = `
+      <div class="quiz-result">
+        <div class="score-ring" style="--pct:${pct * 3.6}deg">
+          <div class="score-num">${score}/${questions.length}</div>
+          <div class="score-label">${pct}%</div>
+        </div>
+        <div style="font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;margin-bottom:10px">${msg}</div>
+        <p style="color:var(--muted);margin-bottom:32px">Kamu menjawab ${score} dari ${questions.length} soal dengan benar.</p>
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+          <button class="btn-primary" onclick="startQuizForTopic('${quizState.topic.id}')">Ulangi Kuis</button>
+          <button class="btn-secondary" onclick="openMaterial('${quizState.topic.id}')">Review Materi</button>
+        </div>
+      </div>`;
+    return;
+  }
+
+  const q = questions[idx];
+  const prog = Math.round((idx / questions.length) * 100);
+  const letters = ['A', 'B', 'C', 'D'];
+  wrap.innerHTML = `
+    <div class="quiz-header">
+      <div class="quiz-progress"><div class="quiz-progress-bar" style="width:${prog}%"></div></div>
+      <div style="display:flex;justify-content:space-between;font-size:.82rem;color:var(--muted)">
+        <span>${quizState.topic.icon} ${quizState.topic.name}</span>
+        <span>Soal ${idx + 1} / ${questions.length}</span>
+      </div>
+    </div>
+    <div class="quiz-question">${q.q}</div>
+    <div class="quiz-options">
+      ${q.opts.map((o, i) => `
+        <button class="quiz-option" onclick="answerQuiz(${i})">
+          <span class="option-letter">${letters[i]}</span>${o}
+        </button>`).join('')}
+    </div>
+    <div class="quiz-feedback" id="quiz-fb"></div>
+    <div class="quiz-nav" id="quiz-nav" style="display:none">
+      <button class="btn-primary" onclick="nextQuiz()">Soal Berikutnya →</button>
+    </div>`;
+}
+
+function answerQuiz(selected) {
+  if (quizState.answered) return;
+  quizState.answered = true;
+  const q = quizState.questions[quizState.idx];
+  const opts = document.querySelectorAll('.quiz-option');
+  const fb = document.getElementById('quiz-fb');
+
+  opts.forEach(o => o.disabled = true);
+  opts[q.ans].classList.add('correct');
+
+  if (selected === q.ans) {
+    quizState.score++;
+    fb.textContent = '✅ Benar! ' + q.explain;
+    fb.className = 'quiz-feedback show correct-fb';
+  } else {
+    opts[selected].classList.add('wrong');
+    fb.textContent = '❌ Kurang tepat. ' + q.explain;
+    fb.className = 'quiz-feedback show wrong-fb';
+  }
+  document.getElementById('quiz-nav').style.display = 'flex';
+}
+
+function nextQuiz() {
+  quizState.idx++;
+  quizState.answered = false;
+  renderQuiz();
+}
+
+// ============================================================
+// ADMIN
+// ============================================================
+let editingTopicId = null;
+let subtopicsBuilder = [];
+let quizBuilder = [];
+
+function renderAdmin() {
+  const list = document.getElementById('topics-admin-list');
+  if (!db.topics.length) {
+    list.innerHTML = '<div style="color:var(--muted);font-size:.88rem;padding:12px 0">Belum ada topik.</div>';
+    return;
+  }
+  list.innerHTML = db.topics.map(t => `
+    <div class="topic-admin-item">
+      <div class="icon">${t.icon}</div>
+      <div class="info">
+        <strong>${t.name}</strong>
+        <small>${t.subtopics.length} sub-materi · ${t.quiz.length} soal kuis</small>
+      </div>
+      <button class="edit-btn" onclick="editTopic('${t.id}')">Edit</button>
+      <button class="delete-btn" onclick="deleteTopic('${t.id}')">Hapus</button>
+    </div>`).join('');
+}
+
+function openAddTopic() {
+  editingTopicId = null;
+  subtopicsBuilder = [{ title: '', content: '' }];
+  quizBuilder = [{ q: '', opts: ['', '', '', ''], ans: 0, explain: '' }];
+  document.getElementById('f-topic-name').value = '';
+  document.getElementById('f-topic-icon').value = '';
+  document.getElementById('f-topic-desc').value = '';
+  document.getElementById('f-topic-level').value = 'easy';
+  document.getElementById('f-topic-color').value = '#f7c948';
+  document.getElementById('topic-form-title').textContent = '✏️ Tambah Topik Baru';
+  document.getElementById('topic-form-card').style.display = 'block';
+  renderBuilders();
+  document.getElementById('topic-form-card').scrollIntoView({ behavior: 'smooth' });
+}
+
+function editTopic(id) {
+  const t = db.topics.find(x => x.id === id);
+  editingTopicId = id;
+  subtopicsBuilder = t.subtopics.map(s => ({ ...s }));
+  quizBuilder = t.quiz.map(q => ({ ...q, opts: [...q.opts] }));
+  document.getElementById('f-topic-name').value = t.name;
+  document.getElementById('f-topic-icon').value = t.icon;
+  document.getElementById('f-topic-desc').value = t.desc;
+  document.getElementById('f-topic-level').value = t.level;
+  document.getElementById('f-topic-color').value = t.color;
+  document.getElementById('topic-form-title').textContent = '✏️ Edit Topik: ' + t.name;
+  document.getElementById('topic-form-card').style.display = 'block';
+  renderBuilders();
+  document.getElementById('topic-form-card').scrollIntoView({ behavior: 'smooth' });
+}
+
+function deleteTopic(id) {
+  if (!confirm('Hapus topik ini?')) return;
+  db.topics = db.topics.filter(t => t.id !== id);
+  saveDB();
+  renderAdmin();
+  toast('Topik dihapus');
+}
+
+function cancelTopicForm() {
+  document.getElementById('topic-form-card').style.display = 'none';
+}
+
+function addSubtopic() {
+  subtopicsBuilder.push({ title: '', content: '' });
+  renderBuilders();
+}
+
+function removeSubtopic(i) {
+  subtopicsBuilder.splice(i, 1);
+  renderBuilders();
+}
+
+function addQuizQuestion() {
+  quizBuilder.push({ q: '', opts: ['', '', '', ''], ans: 0, explain: '' });
+  renderBuilders();
+}
+
+function removeQuestion(i) {
+  quizBuilder.splice(i, 1);
+  renderBuilders();
+}
+
+function renderBuilders() {
+  // Subtopics
+  const sb = document.getElementById('subtopics-builder');
+  sb.innerHTML = subtopicsBuilder.map((s, i) => `
+    <div class="quiz-q-item">
+      <div class="quiz-q-header"><span>Sub-Materi ${i + 1}</span><button class="delete-btn" onclick="removeSubtopic(${i})">Hapus</button></div>
+      <div class="form-group">
+        <label>Judul Sub-Materi</label>
+        <input type="text" value="${escHtml(s.title)}" oninput="subtopicsBuilder[${i}].title=this.value" placeholder="cth: Pengertian...">
+      </div>
+      <div class="form-group">
+        <label>Isi Materi (HTML diperbolehkan: &lt;h3&gt;, &lt;p&gt;, .formula-box, .example-box, .note-box)</label>
+        <textarea oninput="subtopicsBuilder[${i}].content=this.value" rows="6" placeholder="Tulis materi di sini. Gunakan tag HTML untuk format.">${escHtml(s.content)}</textarea>
+      </div>
+    </div>`).join('');
+
+  // Quiz
+  const qb = document.getElementById('quiz-builder');
+  const letters = ['A', 'B', 'C', 'D'];
+  qb.innerHTML = quizBuilder.map((q, i) => `
+    <div class="quiz-q-item">
+      <div class="quiz-q-header"><span>Soal ${i + 1}</span><button class="delete-btn" onclick="removeQuestion(${i})">Hapus</button></div>
+      <div class="form-group">
+        <label>Pertanyaan</label>
+        <input type="text" value="${escHtml(q.q)}" oninput="quizBuilder[${i}].q=this.value" placeholder="Tuliskan pertanyaan...">
+      </div>
+      <label style="font-size:.82rem;color:var(--muted);display:block;margin-bottom:8px">Pilihan jawaban (pilih radio = jawaban benar)</label>
+      <div class="options-grid">
+        ${q.opts.map((o, j) => `
+          <div class="option-input">
+            <input type="radio" name="ans_${i}" ${q.ans === j ? 'checked' : ''} onchange="quizBuilder[${i}].ans=${j}">
+            <input type="text" value="${escHtml(o)}" oninput="quizBuilder[${i}].opts[${j}]=this.value" placeholder="${letters[j]}. Pilihan...">
+          </div>`).join('')}
+      </div>
+      <div class="form-group" style="margin-top:12px">
+        <label>Penjelasan jawaban</label>
+        <input type="text" value="${escHtml(q.explain)}" oninput="quizBuilder[${i}].explain=this.value" placeholder="Mengapa jawaban ini benar?">
+      </div>
+    </div>`).join('');
+}
+
+function escHtml(s) { return (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function saveTopic() {
+  const name = document.getElementById('f-topic-name').value.trim();
+  if (!name) { toast('Nama topik wajib diisi!'); return; }
+  const topicData = {
+    id: editingTopicId || 't' + Date.now(),
+    name,
+    icon: document.getElementById('f-topic-icon').value || '📘',
+    desc: document.getElementById('f-topic-desc').value || '',
+    level: document.getElementById('f-topic-level').value,
+    color: document.getElementById('f-topic-color').value,
+    subtopics: subtopicsBuilder.filter(s => s.title).map((s, i) => ({ id: 's' + Date.now() + i, ...s })),
+    quiz: quizBuilder.filter(q => q.q && q.opts.every(o => o)).map(q => ({ ...q }))
+  };
+  if (editingTopicId) {
+    const idx = db.topics.findIndex(t => t.id === editingTopicId);
+    db.topics[idx] = topicData;
+  } else {
+    db.topics.push(topicData);
+  }
+  saveDB();
+  renderAdmin();
+  renderStats();
+  document.getElementById('topic-form-card').style.display = 'none';
+  toast('✅ Topik berhasil disimpan!');
+}
+
+// ============================================================
+// TOAST
+// ============================================================
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 2800);
+}
+
+// Init
+renderStats();
+</script>
+</body>
+</html>
